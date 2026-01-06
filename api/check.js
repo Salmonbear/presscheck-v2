@@ -1,3 +1,29 @@
+// Helper function to check if input is a URL
+function isURL(str) {
+    try {
+        const url = new URL(str.trim());
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
+// Helper function to fetch article content from URL using Jina AI Reader
+async function fetchArticleFromURL(url) {
+    const jinaURL = `https://r.jina.ai/${url}`;
+    const response = await fetch(jinaURL, {
+        headers: {
+            'Accept': 'text/plain'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch article from URL');
+    }
+
+    return await response.text();
+}
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -6,7 +32,7 @@ export default async function handler(req, res) {
     const { article } = req.body;
 
     if (!article) {
-        return res.status(400).json({ error: 'Article text is required' });
+        return res.status(400).json({ error: 'Article text or URL is required' });
     }
 
     const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -16,6 +42,11 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Check if input is a URL and fetch content if it is
+        let articleText = article;
+        if (isURL(article)) {
+            articleText = await fetchArticleFromURL(article.trim());
+        }
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -54,7 +85,7 @@ Ensure each 'details' field starts with the section's title followed by a descri
                     },
                     {
                         role: 'user',
-                        content: `Here is the article to assess: ${article}`
+                        content: `Here is the article to assess: ${articleText}`
                     }
                 ]
             })
