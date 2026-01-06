@@ -81,7 +81,10 @@ Provide the following output strictly in JSON format:
   }
 }
 
-Ensure each 'details' field starts with the section's title followed by a description, and strings are formatted for HTML interpretation.`
+Ensure each 'details' field contains HTML with an <h3> heading for the section title, followed by a paragraph with the description. For example:
+"claimsToEvidence": "<h3>Ratio of Claims to Facts and Evidence</h3><p>Your analysis here...</p>"
+
+Use <h3> tags for all section headings and <p> tags for the content.`
                     },
                     {
                         role: 'user',
