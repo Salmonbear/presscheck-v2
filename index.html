@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PressCheck</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 60px 20px 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 56px;
+            color: #8B0000;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 400;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 40px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: #000;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .results {
+            margin-top: 30px;
+            text-align: left;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score {
+            font-size: 36px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .rating {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .summary {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .details {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 4px;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .details h3 {
+            color: #333;
+            margin-top: 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .details h3:first-child {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>PressCheck</h1>
+        <p class="subtitle">See how trustworthy your news really is</p>
+        <div class="container">
+            <form id="articleForm">
+                <div class="input-group">
+                    <textarea
+                        id="articleInput"
+                        placeholder="Paste article text here..."
+                        required
+                        rows="3"
+                    ></textarea>
+                    <button type="submit" id="submitBtn">Check</button>
+                </div>
+            </form>
+            <div class="loading" id="loading">Analyzing article...</div>
+            <div class="error" id="error"></div>
+            <div class="results" id="results">
+                <div class="score" id="score"></div>
+                <div class="rating" id="rating"></div>
+                <div class="summary" id="summary"></div>
+                <div class="details" id="details"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('articleForm');
+        const input = document.getElementById('articleInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const article = input.value.trim();
+            if (!article) return;
+
+            submitBtn.disabled = true;
+            loading.classList.add('show');
+            error.classList.remove('show');
+            results.classList.remove('show');
+
+            try {
+                const response = await fetch('/api/check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ article })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to analyze article');
+                }
+
+                displayResults(data);
+            } catch (err) {
+                error.textContent = err.message;
+                error.classList.add('show');
+            } finally {
+                submitBtn.disabled = false;
+                loading.classList.remove('show');
+            }
+        });
+
+        function displayResults(data) {
+            document.getElementById('score').textContent = data.score + '/100';
+            document.getElementById('rating').textContent = data.rating;
+            document.getElementById('summary').textContent = data.summary;
+
+            const detailsHtml = `
+                ${data.details.claimsToEvidence || ''}
+                ${data.details.evidenceType || ''}
+                ${data.details.independentAnalysis || ''}
+                ${data.details.headlineConsistency || ''}
+                ${data.details.incendiaryNature || ''}
+            `;
+            document.getElementById('details').innerHTML = detailsHtml;
+
+            results.classList.add('show');
+        }
+    </script>
+</body>
+</html>

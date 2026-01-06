@@ -1,0 +1,11 @@
+{
+  "name": "presscheck",
+  "version": "1.0.0",
+  "description": "Article credibility checker",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
