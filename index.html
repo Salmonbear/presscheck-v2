@@ -312,14 +312,54 @@
             align-items: center;
         }
 
-        .detail-section h3::after {
-            content: '▼';
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .mini-circle-score {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        .mini-circle-bg, .mini-circle-progress {
+            fill: none;
+            stroke-width: 4;
+        }
+
+        .mini-circle-bg {
+            stroke: rgba(0, 0, 0, 0.1);
+        }
+
+        .mini-circle-progress {
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mini-score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .collapse-icon {
             font-size: 12px;
             transition: transform 0.3s ease;
             opacity: 0.5;
+            margin-left: auto;
         }
 
-        .detail-section.collapsed h3::after {
+        .detail-section.collapsed .collapse-icon {
             transform: rotate(-90deg);
         }
 
@@ -534,22 +574,67 @@
             detailsContainer.innerHTML = '';
 
             const detailSections = [
-                { key: 'claimsToEvidence', html: data.details.claimsToEvidence },
-                { key: 'evidenceType', html: data.details.evidenceType },
-                { key: 'independentAnalysis', html: data.details.independentAnalysis },
-                { key: 'headlineConsistency', html: data.details.headlineConsistency },
-                { key: 'incendiaryNature', html: data.details.incendiaryNature }
+                { key: 'claimsToEvidence', data: data.details.claimsToEvidence },
+                { key: 'evidenceType', data: data.details.evidenceType },
+                { key: 'independentAnalysis', data: data.details.independentAnalysis },
+                { key: 'headlineConsistency', data: data.details.headlineConsistency },
+                { key: 'incendiaryNature', data: data.details.incendiaryNature }
             ];
 
             detailSections.forEach((section, index) => {
-                if (section.html) {
+                // Handle both new format {score, html} and old format (just html string)
+                const isNewFormat = section.data && typeof section.data === 'object' && section.data.html;
+                const isOldFormat = section.data && typeof section.data === 'string';
+
+                if (isNewFormat || isOldFormat) {
+                    const sectionScore = isNewFormat ? (section.data.score || 0) : 50; // default to 50 for old format
+                    const sectionHtml = isNewFormat ? section.data.html : section.data;
+                    const sectionColor = getScoreColor(sectionScore);
+
                     const div = document.createElement('div');
                     div.className = 'detail-section';
-                    div.innerHTML = `<div class="detail-content">${section.html}</div>`;
 
-                    // Add click handler for collapse/expand
+                    // Create mini circular score indicator
+                    const miniRadius = 20;
+                    const miniCircumference = 2 * Math.PI * miniRadius;
+                    const miniOffset = miniCircumference - (sectionScore / 100) * miniCircumference;
+
+                    div.innerHTML = `
+                        <div class="detail-content">
+                            ${sectionHtml}
+                        </div>
+                    `;
+
+                    // Extract h3 and wrap it with score indicator
                     const h3 = div.querySelector('h3');
                     if (h3) {
+                        const h3Text = h3.textContent;
+                        h3.innerHTML = `
+                            <div class="detail-header">
+                                <div class="mini-circle-score">
+                                    <svg width="50" height="50">
+                                        <circle class="mini-circle-bg" cx="25" cy="25" r="${miniRadius}"></circle>
+                                        <circle class="mini-circle-progress section-circle-${index}" cx="25" cy="25" r="${miniRadius}"
+                                            style="stroke-dasharray: ${miniCircumference}; stroke-dashoffset: ${miniCircumference}; stroke: ${sectionColor};"></circle>
+                                    </svg>
+                                    <div class="mini-score-text section-score-${index}">0</div>
+                                </div>
+                                <span>${h3Text}</span>
+                            </div>
+                            <span class="collapse-icon">▼</span>
+                        `;
+
+                        // Animate mini circle after a delay
+                        setTimeout(() => {
+                            const circle = div.querySelector(`.section-circle-${index}`);
+                            const scoreEl = div.querySelector(`.section-score-${index}`);
+                            if (circle && scoreEl) {
+                                circle.style.strokeDashoffset = miniOffset;
+                                animateMiniScore(scoreEl, sectionScore);
+                            }
+                        }, 600 + (index * 100));
+
+                        // Add click handler for collapse/expand
                         h3.addEventListener('click', (e) => {
                             e.stopPropagation();
                             div.classList.toggle('collapsed');
@@ -559,6 +644,21 @@
                     detailsContainer.appendChild(div);
                 }
             });
+
+            function animateMiniScore(element, targetScore) {
+                let currentScore = 0;
+                const duration = 1000;
+                const increment = targetScore / (duration / 16);
+
+                const timer = setInterval(() => {
+                    currentScore += increment;
+                    if (currentScore >= targetScore) {
+                        currentScore = targetScore;
+                        clearInterval(timer);
+                    }
+                    element.textContent = Math.round(currentScore);
+                }, 16);
+            }
 
             // Smooth scroll to results
             setTimeout(() => {

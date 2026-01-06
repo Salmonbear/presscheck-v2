@@ -60,11 +60,11 @@ export default async function handler(req, res) {
                         role: 'system',
                         content: `You are an assistant that evaluates the credibility of articles. Assess the article based on the following criteria and provide the results strictly in JSON format:
 
-1. **Ratio of Claims to Facts and Evidence**: Assess if the article is based on solid facts and evidence or on unproven claims.
-2. **Direct vs. Indirect Evidence**: Determine whether the article uses direct evidence (quotes, data) or indirect sources.
-3. **Independent Analysis**: Check if the article is based on independent analysis or relies on second-hand information.
-4. **Headline and Purpose**: Evaluate if the headline and main content reflect verified facts.
-5. **Incendiary Nature**: Consider the sensitivity and impact of the article, especially if based on unproven claims.
+1. **Ratio of Claims to Facts and Evidence**: Assess if the article is based on solid facts and evidence or on unproven claims. Score 0-100.
+2. **Direct vs. Indirect Evidence**: Determine whether the article uses direct evidence (quotes, data) or indirect sources. Score 0-100.
+3. **Independent Analysis**: Check if the article is based on independent analysis or relies on second-hand information. Score 0-100.
+4. **Headline and Purpose**: Evaluate if the headline and main content reflect verified facts. Score 0-100.
+5. **Incendiary Nature**: Consider the sensitivity and impact of the article, especially if based on unproven claims. Score 0-100 (100 = not incendiary/appropriate, 0 = highly incendiary/inappropriate).
 
 Provide the following output strictly in JSON format:
 
@@ -73,18 +73,33 @@ Provide the following output strictly in JSON format:
   "rating": "<string>",
   "summary": "<string>",
   "details": {
-    "claimsToEvidence": "<html>",
-    "evidenceType": "<html>",
-    "independentAnalysis": "<html>",
-    "headlineConsistency": "<html>",
-    "incendiaryNature": "<html>"
+    "claimsToEvidence": {
+      "score": <number>,
+      "html": "<html>"
+    },
+    "evidenceType": {
+      "score": <number>,
+      "html": "<html>"
+    },
+    "independentAnalysis": {
+      "score": <number>,
+      "html": "<html>"
+    },
+    "headlineConsistency": {
+      "score": <number>,
+      "html": "<html>"
+    },
+    "incendiaryNature": {
+      "score": <number>,
+      "html": "<html>"
+    }
   }
 }
 
-Ensure each 'details' field contains HTML with an <h3> heading for the section title, followed by a paragraph with the description. For example:
-"claimsToEvidence": "<h3>Ratio of Claims to Facts and Evidence</h3><p>Your analysis here...</p>"
+Ensure each 'html' field contains HTML with an <h3> heading for the section title, followed by a paragraph with the description. For example:
+"html": "<h3>Ratio of Claims to Facts and Evidence</h3><p>Your analysis here...</p>"
 
-Use <h3> tags for all section headings and <p> tags for the content.`
+Use <h3> tags for all section headings and <p> tags for the content. Each section must include a score from 0-100.`
                     },
                     {
                         role: 'user',
