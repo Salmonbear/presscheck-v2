@@ -291,14 +291,6 @@
             border-radius: 12px;
             margin-bottom: 12px;
             border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .detail-section:hover {
-            background: rgba(250, 250, 250, 0.9);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .detail-section h3 {
@@ -352,27 +344,8 @@
             color: #333;
         }
 
-        .collapse-icon {
-            font-size: 12px;
-            transition: transform 0.3s ease;
-            opacity: 0.5;
-            margin-left: auto;
-        }
-
-        .detail-section.collapsed .collapse-icon {
-            transform: rotate(-90deg);
-        }
-
         .detail-content {
-            max-height: 500px;
-            overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease;
-            opacity: 1;
-        }
-
-        .detail-section.collapsed .detail-content {
-            max-height: 0;
-            opacity: 0;
+            overflow: visible;
         }
 
         .detail-section p {
@@ -468,19 +441,6 @@
         const container = document.getElementById('container');
         const circleProgress = document.getElementById('circleProgress');
         const scoreText = document.getElementById('scoreText');
-
-        // Parallax effect
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    const scrolled = window.pageYOffset;
-                    document.body.style.backgroundPositionY = scrolled * 0.5 + 'px';
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        });
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -621,7 +581,6 @@
                                 </div>
                                 <span>${h3Text}</span>
                             </div>
-                            <span class="collapse-icon">▼</span>
                         `;
 
                         // Animate mini circle after a delay
@@ -633,12 +592,6 @@
                                 animateMiniScore(scoreEl, sectionScore);
                             }
                         }, 600 + (index * 100));
-
-                        // Add click handler for collapse/expand
-                        h3.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            div.classList.toggle('collapsed');
-                        });
                     }
 
                     detailsContainer.appendChild(div);
