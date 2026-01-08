@@ -695,6 +695,10 @@
             submitBtn.disabled = true;
             error.classList.remove('show');
             results.classList.remove('show');
+            
+            // Clear previous results
+            document.getElementById('details').innerHTML = '';
+            document.getElementById('summary').textContent = '';
 
             // Collapse the input card
             inputCard.classList.add('collapsed');
@@ -814,6 +818,9 @@
 
             // Show results
             results.classList.add('show');
+
+            // Uncollapse the input card to allow checking another article
+            inputCard.classList.remove('collapsed');
 
             // Animate circle and score
             setTimeout(() => {
