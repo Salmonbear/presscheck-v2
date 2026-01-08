@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PressCheck</title>
+    <title>PressCheck - Check Article Credibility</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,158 +15,190 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-image: url('background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #fafafa;
             min-height: 100vh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 60px 20px 20px;
-            position: relative;
             overflow-x: hidden;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 0;
+        /* Header */
+        header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
         }
 
-        .wrapper {
-            position: relative;
-            z-index: 1;
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: none;
         }
 
-        .container {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
-            width: 100%;
+        /* Hero Section */
+        .hero {
+            max-width: 800px;
+            margin: 80px auto 60px;
             text-align: center;
-            transition: max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1), padding 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .container.expanded {
-            max-width: 700px;
+            padding: 0 40px;
         }
 
         h1 {
-            font-family: 'Crimson Pro', serif;
-            font-size: clamp(40px, 8vw, 64px);
-            color: #8B0000;
-            margin-bottom: 12px;
+            font-size: clamp(36px, 5vw, 56px);
+            color: #1a1a1a;
+            margin-bottom: 20px;
             font-weight: 700;
-            text-align: center;
+            line-height: 1.2;
             letter-spacing: -0.02em;
-            text-shadow: 0 2px 8px rgba(139, 0, 0, 0.1);
         }
 
-        .subtitle {
-            font-size: clamp(16px, 3vw, 18px);
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 400;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 16px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            display: inline-block;
+        .strapline {
+            font-size: clamp(16px, 2vw, 20px);
+            color: #666;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .input-group {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 10px;
+        /* Input Interface */
+        .input-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 40px 60px;
         }
 
-        textarea {
-            flex: 1;
-            padding: 14px;
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            font-size: 15px;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 40px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #8B0000;
-            box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+        .input-card {
             background: white;
-        }
-
-        button {
-            padding: 14px 24px;
-            background: #333;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap;
-            position: relative;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             overflow: hidden;
         }
 
-        button::before {
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px 24px;
+            background: transparent;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: #1a1a1a;
+            background: #f9f9f9;
+        }
+
+        .tab.active {
+            color: #1a1a1a;
+        }
+
+        .tab.active::after {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #6366f1;
         }
 
-        button:hover::before {
-            width: 300px;
-            height: 300px;
+        .input-content {
+            padding: 24px;
         }
 
-        button:hover {
-            background: #000;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        .tab-panel {
+            display: none;
         }
 
-        button:active {
+        .tab-panel.active {
+            display: block;
+        }
+
+        input[type="url"],
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 48px;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        textarea {
+            min-height: 120px;
+        }
+
+        input[type="url"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .input-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+
+        .cta-button {
+            padding: 14px 32px;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cta-button:hover {
+            background: #5558e3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .cta-button:active {
             transform: translateY(0);
         }
 
-        button:disabled {
-            background: #999;
+        .cta-button:disabled {
+            background: #9ca3af;
             cursor: not-allowed;
             transform: none;
         }
 
+        .cta-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Loading & Results */
         .loading {
             text-align: center;
             color: #666;
-            margin-top: 30px;
+            margin: 40px 0;
             font-size: 15px;
             display: none;
         }
@@ -179,8 +211,8 @@
             width: 40px;
             height: 40px;
             margin: 0 auto 12px;
-            border: 3px solid rgba(139, 0, 0, 0.1);
-            border-top-color: #8B0000;
+            border: 3px solid rgba(99, 102, 241, 0.1);
+            border-top-color: #6366f1;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -189,17 +221,21 @@
             to { transform: rotate(360deg); }
         }
 
+        .results-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 40px;
+        }
+
         .error {
-            background: rgba(254, 238, 238, 0.95);
-            backdrop-filter: blur(10px);
-            color: #c00;
-            padding: 16px;
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 16px 20px;
             border-radius: 12px;
-            margin-top: 20px;
+            margin: 20px 0;
             font-size: 14px;
             display: none;
-            border: 1px solid rgba(204, 0, 0, 0.2);
-            animation: slideIn 0.3s ease-out;
+            border: 1px solid #fee2e2;
         }
 
         .error.show {
@@ -207,8 +243,6 @@
         }
 
         .results {
-            margin-top: 40px;
-            text-align: left;
             display: none;
         }
 
@@ -367,92 +401,155 @@
             }
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         @media (max-width: 768px) {
-            .container {
-                padding: 30px 24px;
+            header {
+                padding: 16px 20px;
             }
 
-            .input-group {
-                flex-direction: column;
+            .hero {
+                margin: 60px auto 40px;
+                padding: 0 20px;
             }
 
-            button {
-                width: 100%;
+            .input-container,
+            .results-container {
+                padding: 0 20px;
+            }
+
+            .input-content {
+                padding: 16px;
+            }
+
+            .tabs {
+                font-size: 14px;
+            }
+
+            .tab {
+                padding: 12px 16px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <h1>PressCheck</h1>
-        <p class="subtitle">See how trustworthy your news really is</p>
-        <div class="container" id="container">
-            <form id="articleForm">
-                <div class="input-group">
-                    <textarea
-                        id="articleInput"
-                        placeholder="Paste article URL or text here..."
-                        required
-                        rows="3"
-                    ></textarea>
-                    <button type="submit" id="submitBtn">Check</button>
-                </div>
-            </form>
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                Analyzing article...
+    <!-- Header -->
+    <header>
+        <a href="/" class="logo">PressCheck</a>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Check how trustworthy your news really is</h1>
+        <p class="strapline">PressCheck is a simple tool to evaluate journalistic credibility of the articles we read.</p>
+    </section>
+
+    <!-- Input Interface -->
+    <div class="input-container">
+        <div class="input-card">
+            <div class="tabs">
+                <button class="tab active" data-tab="url">Article URL</button>
+                <button class="tab" data-tab="content">Article Content</button>
             </div>
-            <div class="error" id="error"></div>
-            <div class="results" id="results">
-                <div class="score-container">
-                    <div class="circle-score">
-                        <svg width="140" height="140">
-                            <circle class="circle-bg" cx="70" cy="70" r="60"></circle>
-                            <circle class="circle-progress" id="circleProgress" cx="70" cy="70" r="60"></circle>
-                        </svg>
-                        <div class="score-text" id="scoreText">0</div>
+            <div class="input-content">
+                <form id="articleForm">
+                    <div class="tab-panel active" id="urlPanel">
+                        <input
+                            type="url"
+                            id="urlInput"
+                            placeholder="https://example.com/article"
+                            required
+                        />
                     </div>
-                    <div class="rating" id="rating"></div>
-                </div>
-                <div class="summary" id="summary"></div>
-                <div class="details" id="details"></div>
+                    <div class="tab-panel" id="contentPanel">
+                        <textarea
+                            id="contentInput"
+                            placeholder="Paste article content here..."
+                            rows="5"
+                        ></textarea>
+                    </div>
+                    <div class="input-footer">
+                        <button type="submit" class="cta-button" id="submitBtn">
+                            Validate
+                            <svg viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            Analyzing article...
+        </div>
+
+        <div class="error" id="error"></div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-container">
+        <div class="results" id="results">
+            <div class="score-container">
+                <div class="circle-score">
+                    <svg width="140" height="140">
+                        <circle class="circle-bg" cx="70" cy="70" r="60"></circle>
+                        <circle class="circle-progress" id="circleProgress" cx="70" cy="70" r="60"></circle>
+                    </svg>
+                    <div class="score-text" id="scoreText">0</div>
+                </div>
+                <div class="rating" id="rating"></div>
+            </div>
+            <div class="summary" id="summary"></div>
+            <div class="details" id="details"></div>
         </div>
     </div>
 
     <script>
+        // Tab switching
+        const tabs = document.querySelectorAll('.tab');
+        const urlPanel = document.getElementById('urlPanel');
+        const contentPanel = document.getElementById('contentPanel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                const tabType = tab.dataset.tab;
+                if (tabType === 'url') {
+                    urlPanel.classList.add('active');
+                    contentPanel.classList.remove('active');
+                } else {
+                    contentPanel.classList.add('active');
+                    urlPanel.classList.remove('active');
+                }
+            });
+        });
+
+        // Form handling
         const form = document.getElementById('articleForm');
-        const input = document.getElementById('articleInput');
+        const urlInput = document.getElementById('urlInput');
+        const contentInput = document.getElementById('contentInput');
         const submitBtn = document.getElementById('submitBtn');
         const loading = document.getElementById('loading');
         const error = document.getElementById('error');
         const results = document.getElementById('results');
-        const container = document.getElementById('container');
         const circleProgress = document.getElementById('circleProgress');
         const scoreText = document.getElementById('scoreText');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const article = input.value.trim();
+            // Get article content from active tab
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
+            const article = activeTab === 'url' ? urlInput.value.trim() : contentInput.value.trim();
+
             if (!article) return;
 
             submitBtn.disabled = true;
             loading.classList.add('show');
             error.classList.remove('show');
             results.classList.remove('show');
-            container.classList.remove('expanded');
 
             try {
                 const response = await fetch('/api/check', {
@@ -501,9 +598,6 @@
         }
 
         function displayResults(data) {
-            // Expand container
-            container.classList.add('expanded');
-
             // Setup circular progress
             const score = data.score;
             const radius = 60;
