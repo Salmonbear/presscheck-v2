@@ -115,22 +115,27 @@ Use <h3> tags for all section headings and <p> tags for the content. Each sectio
         }
 
         const data = await response.json();
-        const content = data.choices[0].message.content;
+        let content = data.choices[0].message.content;
+
+        // Strip markdown code blocks if present
+        content = content.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
 
         let result;
         try {
             result = JSON.parse(content);
         } catch (e) {
+            console.error('JSON Parse Error:', e.message);
+            console.error('Content:', content);
             result = {
                 score: 50,
                 rating: 'Unable to parse',
                 summary: content,
                 details: {
-                    claimsToEvidence: '',
-                    evidenceType: '',
-                    independentAnalysis: '',
-                    headlineConsistency: '',
-                    incendiaryNature: ''
+                    claimsToEvidence: { score: 50, html: '' },
+                    evidenceType: { score: 50, html: '' },
+                    independentAnalysis: { score: 50, html: '' },
+                    headlineConsistency: { score: 50, html: '' },
+                    incendiaryNature: { score: 50, html: '' }
                 }
             };
         }
