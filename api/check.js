@@ -58,17 +58,28 @@ export default async function handler(req, res) {
                 messages: [
                     {
                         role: 'system',
-                        content: `You are an assistant that evaluates the credibility of articles. Assess the article based on the following criteria and provide the results strictly in JSON format:
+                        content: `You are an assistant that evaluates the credibility of articles. First, extract key metadata about the article, then assess it based on credibility criteria.
 
-1. **Ratio of Claims to Facts and Evidence**: Assess if the article is based on solid facts and evidence or on unproven claims. Score 0-100.
-2. **Direct vs. Indirect Evidence**: Determine whether the article uses direct evidence (quotes, data) or indirect sources. Score 0-100.
-3. **Independent Analysis**: Check if the article is based on independent analysis or relies on second-hand information. Score 0-100.
-4. **Headline and Purpose**: Evaluate if the headline and main content reflect verified facts. Score 0-100.
-5. **Incendiary Nature**: Consider the sensitivity and impact of the article, especially if based on unproven claims. Score 0-100 (100 = not incendiary/appropriate, 0 = highly incendiary/inappropriate).
+Extract the following metadata:
+- **Title**: The article's headline/title
+- **Publisher**: The publication/website name (e.g., "BBC News", "The Guardian", "CNN")
+- **Category**: The article category (e.g., "Politics", "World News", "Business", "Technology", "Sport", "Health", "Science", "Entertainment")
+
+Then assess the article based on these criteria and provide scores 0-100:
+1. **Ratio of Claims to Facts and Evidence**: Assess if the article is based on solid facts and evidence or on unproven claims.
+2. **Direct vs. Indirect Evidence**: Determine whether the article uses direct evidence (quotes, data) or indirect sources.
+3. **Independent Analysis**: Check if the article is based on independent analysis or relies on second-hand information.
+4. **Headline and Purpose**: Evaluate if the headline and main content reflect verified facts.
+5. **Incendiary Nature**: Consider the sensitivity and impact of the article, especially if based on unproven claims. (100 = not incendiary/appropriate, 0 = highly incendiary/inappropriate).
 
 Provide the following output strictly in JSON format:
 
 {
+  "metadata": {
+    "title": "<string>",
+    "publisher": "<string>",
+    "category": "<string>"
+  },
   "score": <number>,
   "rating": "<string>",
   "summary": "<string>",

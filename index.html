@@ -282,13 +282,54 @@
             display: block;
         }
 
+        .metadata-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .metadata-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .metadata-info {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .metadata-label {
+            font-weight: 600;
+            color: #8B0000;
+        }
+
+        .metadata-value {
+            color: #1a1a1a;
+        }
+
         .score-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 30px;
             opacity: 0;
-            animation: fadeInUp 0.6s ease-out 0.1s forwards;
+            animation: fadeInUp 0.6s ease-out 0.2s forwards;
         }
 
         .circle-score {
@@ -342,12 +383,12 @@
             font-size: 15px;
             border: 1px solid rgba(0, 0, 0, 0.05);
             opacity: 0;
-            animation: fadeInUp 0.6s ease-out 0.3s forwards;
+            animation: fadeInUp 0.6s ease-out 0.4s forwards;
         }
 
         .details {
             opacity: 0;
-            animation: fadeInUp 0.6s ease-out 0.5s forwards;
+            animation: fadeInUp 0.6s ease-out 0.6s forwards;
         }
 
         .detail-section {
@@ -521,6 +562,19 @@
     <!-- Results Section -->
     <div class="results-container">
         <div class="results" id="results">
+            <div class="metadata-card" id="metadataCard">
+                <div class="metadata-title" id="metadataTitle"></div>
+                <div class="metadata-info">
+                    <div class="metadata-item">
+                        <span class="metadata-label">Publisher:</span>
+                        <span class="metadata-value" id="metadataPublisher"></span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Category:</span>
+                        <span class="metadata-value" id="metadataCategory"></span>
+                    </div>
+                </div>
+            </div>
             <div class="score-container">
                 <div class="circle-score">
                     <svg width="140" height="140">
@@ -630,6 +684,13 @@
         }
 
         function displayResults(data) {
+            // Display metadata if available
+            if (data.metadata) {
+                document.getElementById('metadataTitle').textContent = data.metadata.title || 'Article';
+                document.getElementById('metadataPublisher').textContent = data.metadata.publisher || 'Unknown';
+                document.getElementById('metadataCategory').textContent = data.metadata.category || 'General';
+            }
+
             // Setup circular progress
             const score = data.score;
             const radius = 60;
